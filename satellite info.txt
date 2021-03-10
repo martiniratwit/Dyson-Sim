@@ -8,6 +8,8 @@ To fuel a satellite, it is expected for each satellite to carry roughly 3 tons o
 Rocket fuel weighs in at about 770 gallons per ton, and cost roughly $1.65 per gallon as of 2015.
 This means that fuel costs about $3811.5
 
+The launch cost for each satellite is roughly $20 million.
+
 Repair information is hard to find, so that is something I need to continue to research.
 
 Satellites last for about 10 years, meaning that each panel in the array must be replaced that ofren.
