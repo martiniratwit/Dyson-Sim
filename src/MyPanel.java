@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
+//test
 public class MyPanel extends JPanel {
 
     final int PANEL_WIDTH = 600;
