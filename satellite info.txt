@@ -16,4 +16,4 @@ To calculate our data, a few things must be kept in mind: cost of the full satel
 With these values, any information we want to display can be calculated.
 
 ie:
-Total cost of satellite: sat cost + launch cost + (repair cost * lifetime)
+Total cost of satellite: sat cost + launch cost + fuel cost + (repair cost * lifetime)
