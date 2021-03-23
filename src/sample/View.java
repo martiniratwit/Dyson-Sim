@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -30,16 +31,21 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class View extends Application implements EventHandler<ActionEvent>{
 
     private Controller control = new Controller();
-    static double costPerSqFootage;
-    static double sqFootage;
-    static double fuelTons;
-    static double productionCost;
+    static double costPerSqFootage = 10;
+    static double sqFootage = 500;
+    static double fuelTons = 3;
+    static double fuelCost = 1270.5;
+    static double productionCost = 1000000;
     static int satelliteNumber = 1;
+    
+    ArrayList<Box> visualSats = new ArrayList<>();
+    ArrayList<Satellite> satellites = new ArrayList<>();
 
     Camera camera = new PerspectiveCamera(true);
 
@@ -59,9 +65,12 @@ public class View extends Application implements EventHandler<ActionEvent>{
     @Override
     public void handle(ActionEvent t) {
         Box satellite = satellite();
+        visualSats.add(satellite);
+        satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, 1));
+        
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
-        Label launchCost = new Label("Satellite" + satelliteNumber + " Cost: " + control.getLaunchCost(costPerSqFootage,sqFootage,fuelTons,productionCost,satelliteNumber));
+        Label launchCost = new Label("Satellite" + satelliteNumber + " Cost: " + control.getTotalCost(satellites.get(satelliteNumber-1)));
         pane2.getChildren().add(launchCost);
 
 
@@ -181,69 +190,90 @@ public class View extends Application implements EventHandler<ActionEvent>{
         return animationPane;
 
     }
-
+    
+    private void setText(TextField text, double field, double value) {
+		text.textProperty().setValue(Double.toString(value));
+		field = value;
+    }
+    
     private void setInputPane() {
 
+    	//Panel Cost Text Field
         VBox sPCBox = new VBox();
         Label sPCLabel = new Label("Panel Cost (Per Square Footage)");
-        Slider sPCSlider = new Slider(1, 10, 1);
-        sPCSlider.setMinorTickCount(1);
-        sPCSlider.setShowTickLabels(true);
-        sPCSlider.setShowTickMarks(true);
-        sPCBox.getChildren().addAll(sPCLabel,sPCSlider);
-        Label testLabel = new Label("" + sPCSlider.getValue());
-        sPCSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                costPerSqFootage = sPCSlider.getValue();
-            }
+        TextField sPCText = new TextField("10");
+        sPCBox.getChildren().addAll(sPCLabel,sPCText);
+        sPCText.textProperty().addListener((observable, oldValue, newValue) -> {
+        	try {
+        		if(sPCText.textProperty().getValueSafe().contains("f") ||
+        				sPCText.textProperty().getValueSafe().contains("d")) {
+            		setText(sPCText, costPerSqFootage, 10);
+        		}
+        		costPerSqFootage = Double.parseDouble(newValue);
+        	} 
+        	catch(Exception ex) {
+        		setText(sPCText, costPerSqFootage, 10);
+        	}
         });
         pane2.getChildren().add(sPCBox);
 
+        //Square Footage Text Field
         VBox sFBox = new VBox();
         Label sFLabel = new Label("Square Footage");
-        Slider sFSlider = new Slider(1, 10, 1);
-        sFSlider.setMinorTickCount(1);
-        sFSlider.setShowTickLabels(true);
-        sFSlider.setShowTickMarks(true);
-        sFBox.getChildren().addAll(sFLabel,sFSlider);
-        sFSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                sqFootage = sFSlider.getValue();
-            }
+        TextField sFText = new TextField("500");
+        sFBox.getChildren().addAll(sFLabel,sFText);
+        sFText.textProperty().addListener((observable, oldValue, newValue) -> {
+        	try {
+        		if(sFText.textProperty().getValueSafe().contains("f") ||
+        				sFText.textProperty().getValueSafe().contains("d")) {
+            		setText(sFText, sqFootage, 500);
+        		}
+        		sqFootage = Double.parseDouble(newValue);
+        	}
+        	catch(Exception ex) 
+        	{
+        		setText(sFText, sqFootage, 500);
+        	}
         });
         pane2.getChildren().add(sFBox);
 
+        //Production Cost Text Field
         VBox pCBox = new VBox();
-        Label pCLabel = new Label("Production Cost (Millions) ");
-        Slider pCSlider = new Slider(0, 1, .1);
-        pCSlider.setMinorTickCount(1);
-        pCSlider.setShowTickLabels(true);
-        pCSlider.setShowTickMarks(true);
-        pCBox.getChildren().addAll(pCLabel,pCSlider);
-        pCSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                fuelTons = pCSlider.getValue();
-            }
+        Label pCLabel = new Label("Production Cost");
+        TextField pCText = new TextField("1000000");
+        pCBox.getChildren().addAll(pCLabel,pCText);
+        pCText.textProperty().addListener((observable, oldValue, newValue) -> {
+        	try {
+        		if(pCText.textProperty().getValueSafe().contains("f") ||
+        				pCText.textProperty().getValueSafe().contains("d")) {
+            		setText(pCText, productionCost, 1000000);
+        		}
+        		productionCost = Double.parseDouble(newValue);
+        	}
+        	catch(Exception ex) 
+        	{
+        		setText(pCText, productionCost, 1000000);
+        	}
         });
         pane2.getChildren().add(pCBox);
-
-        Label spaceLabel = new Label("");
-
+             
+        //Fuel Cost Text Field
         VBox fCBox = new VBox();
-        Label fCLabel = new Label("Fuel Cost (Tons) ");
-        Slider fCSlider = new Slider(1, 10, 1);
-        fCSlider.setMinorTickCount(1);
-        fCSlider.setShowTickLabels(true);
-        fCSlider.setShowTickMarks(true);
-        fCBox.getChildren().addAll(fCLabel,fCSlider,spaceLabel);
-        fCSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                productionCost = fCSlider.getValue();
-            }
+        Label fCLabel = new Label("Fuel Cost (Per Ton) ");
+        TextField fCText = new TextField("1270.5");
+        fCBox.getChildren().addAll(fCLabel,fCText);
+        fCText.textProperty().addListener((observable,oldValue,newValue) -> {
+        	try {
+        		if(fCText.textProperty().getValueSafe().contains("f") ||
+        				fCText.textProperty().getValueSafe().contains("d")) {
+            		setText(fCText, fuelCost, 1270.5);
+        		}
+        	
+        		fuelCost = Double.parseDouble(newValue);
+        	}
+        	catch(Exception ex) {
+        		setText(fCText, fuelCost, 1270.5);
+        	}
         });
         pane2.getChildren().add(fCBox);
 

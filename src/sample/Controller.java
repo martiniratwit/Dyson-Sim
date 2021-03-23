@@ -15,10 +15,11 @@ public class Controller {
 
     }
 
-    public double getLaunchCost(double input1, double input2, double input3, double input4, int input5) {
-        Model model = new Model(input1,input2,input3,input4,input5);
-
-        return (model.getSolarPanelCost()+ model.getFuelCost()+ model.getProductionCost());
+    public double getTotalCost(Satellite satellite) {
+        
+    	return (satellite.getCostPerSqFootage() * satellite.getSqFootage()) + 
+    			(satellite.getFuelPrice() * satellite.getFuelTons()) + satellite.getLaunchCost() +
+    			satellite.getProductionCost();
 
     }
 
