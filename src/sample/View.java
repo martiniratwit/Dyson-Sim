@@ -17,6 +17,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -42,6 +44,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
     static double fuelTons = 3;
     static double fuelCost = 1270.5;
     static double productionCost = 1000000;
+    static double launchCost = 20000000;
     static int satelliteNumber = 1;
     
     ArrayList<Box> visualSats = new ArrayList<>();
@@ -66,12 +69,12 @@ public class View extends Application implements EventHandler<ActionEvent>{
     public void handle(ActionEvent t) {
         Box satellite = satellite();
         visualSats.add(satellite);
-        satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, 1));
+        satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost));
         
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
-        Label launchCost = new Label("Satellite" + satelliteNumber + " Cost: " + control.getTotalCost(satellites.get(satelliteNumber-1)));
-        pane2.getChildren().add(launchCost);
+        Label totalCost = new Label("Satellite" + satelliteNumber + " Cost: " + control.getTotalCost(satellites.get(satelliteNumber-1)));
+        pane2.getChildren().add(totalCost);
 
 
 
@@ -89,7 +92,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
         tilt+=10;
         satelliteNumber+=1;
     }
-
+    
     private Sphere sun() {
         Sphere sun = new Sphere(100);
 
@@ -191,48 +194,81 @@ public class View extends Application implements EventHandler<ActionEvent>{
 
     }
     
-    private void setText(TextField text, double field, double value) {
-		text.textProperty().setValue(Double.toString(value));
-		field = value;
+    //This function checks to see if the current value set in the text box is valid, and updates the store variable accordingly
+    private double textTest(TextField text, String value, String old, double base) {
+    	try {
+    		int first = value.indexOf(".");
+    		if(first != -1) {
+    			//If there are two '.', then the old text and value are used
+    			if(value.indexOf(".", first + 1) != -1) {
+    				setText(text, old);
+    				return -1.0000;
+    			}
+    		}
+    		//Happens only with empty text box, using base value as a placeholder in variable storage
+    		if(value.equals("") || value.equals(".")) {
+    			setText(text, value);
+    			return base;
+    		} 
+    	}
+    	//When something goes wrong, the base value is the safety value that overrides the new value
+    	catch(Exception ex) {
+    		setText(text, Double.toString(base));
+    		return base;
+    	}
+		//Happens when nothing is wrong, and value is valid
+		setText(text, value);
+		return Double.parseDouble(value);
+    }
+    	
+    private void setText(TextField text, String value) {
+    	text.textProperty().setValue(value);
     }
     
+    
     private void setInputPane() {
-
+    	
+    	//This filters out any non-numeric values from being handled in the listener
+        EventHandler<KeyEvent> keyHandler = new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent event) {
+            	if(!event.getCharacter().matches("[0123456789.]")) {		
+            		if(!event.getCode().isArrowKey()) {
+            			if(event.getCode() != KeyCode.BACK_SPACE && event.getCode() != KeyCode.DELETE) {
+            				event.consume();
+            			}
+            		}
+            	}
+            }
+            
+        };
+    	
     	//Panel Cost Text Field
         VBox sPCBox = new VBox();
         Label sPCLabel = new Label("Panel Cost (Per Square Footage)");
-        TextField sPCText = new TextField("10");
+        TextField sPCText = new TextField("10.00");
+        sPCText.addEventFilter(KeyEvent.ANY, keyHandler);
         sPCBox.getChildren().addAll(sPCLabel,sPCText);
         sPCText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	try {
-        		if(sPCText.textProperty().getValueSafe().contains("f") ||
-        				sPCText.textProperty().getValueSafe().contains("d")) {
-            		setText(sPCText, costPerSqFootage, 10);
-        		}
-        		costPerSqFootage = Double.parseDouble(newValue);
-        	} 
-        	catch(Exception ex) {
-        		setText(sPCText, costPerSqFootage, 10);
+        	double result = textTest(sPCText, newValue, oldValue, 10);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		costPerSqFootage = result;
         	}
         });
+
         pane2.getChildren().add(sPCBox);
 
         //Square Footage Text Field
         VBox sFBox = new VBox();
         Label sFLabel = new Label("Square Footage");
-        TextField sFText = new TextField("500");
+        TextField sFText = new TextField("500.00");
+        sFText.addEventFilter(KeyEvent.ANY, keyHandler);
         sFBox.getChildren().addAll(sFLabel,sFText);
         sFText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	try {
-        		if(sFText.textProperty().getValueSafe().contains("f") ||
-        				sFText.textProperty().getValueSafe().contains("d")) {
-            		setText(sFText, sqFootage, 500);
-        		}
-        		sqFootage = Double.parseDouble(newValue);
-        	}
-        	catch(Exception ex) 
-        	{
-        		setText(sFText, sqFootage, 500);
+        	double result = textTest(sFText, newValue, oldValue, 500.00);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		sqFootage = result;
         	}
         });
         pane2.getChildren().add(sFBox);
@@ -240,19 +276,14 @@ public class View extends Application implements EventHandler<ActionEvent>{
         //Production Cost Text Field
         VBox pCBox = new VBox();
         Label pCLabel = new Label("Production Cost");
-        TextField pCText = new TextField("1000000");
+        TextField pCText = new TextField("1000000.00");
+        pCText.addEventFilter(KeyEvent.ANY, keyHandler);
         pCBox.getChildren().addAll(pCLabel,pCText);
         pCText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	try {
-        		if(pCText.textProperty().getValueSafe().contains("f") ||
-        				pCText.textProperty().getValueSafe().contains("d")) {
-            		setText(pCText, productionCost, 1000000);
-        		}
-        		productionCost = Double.parseDouble(newValue);
-        	}
-        	catch(Exception ex) 
-        	{
-        		setText(pCText, productionCost, 1000000);
+        	double result = textTest(pCText, newValue, oldValue, 1000000.00);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		productionCost = result;
         	}
         });
         pane2.getChildren().add(pCBox);
@@ -260,29 +291,52 @@ public class View extends Application implements EventHandler<ActionEvent>{
         //Fuel Cost Text Field
         VBox fCBox = new VBox();
         Label fCLabel = new Label("Fuel Cost (Per Ton) ");
-        TextField fCText = new TextField("1270.5");
+        TextField fCText = new TextField("1270.50");
+        fCText.addEventFilter(KeyEvent.ANY, keyHandler);
         fCBox.getChildren().addAll(fCLabel,fCText);
         fCText.textProperty().addListener((observable,oldValue,newValue) -> {
-        	try {
-        		if(fCText.textProperty().getValueSafe().contains("f") ||
-        				fCText.textProperty().getValueSafe().contains("d")) {
-            		setText(fCText, fuelCost, 1270.5);
-        		}
-        	
-        		fuelCost = Double.parseDouble(newValue);
-        	}
-        	catch(Exception ex) {
-        		setText(fCText, fuelCost, 1270.5);
+        	double result = textTest(fCText, newValue, oldValue, 1270.50);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		fuelCost = result;
         	}
         });
         pane2.getChildren().add(fCBox);
+        
+        //Fuel Tons
+        VBox fTBox = new VBox();
+        Label fTLabel = new Label("Amount of Fuel (Tons)");
+        TextField fTText = new TextField("3.00");
+        fTText.addEventFilter(KeyEvent.ANY, keyHandler);
+        fTBox.getChildren().addAll(fTLabel,fTText);
+        fTText.textProperty().addListener((observable,oldValue,newValue) -> {
+        	double result = textTest(fTText, newValue, oldValue, 3.00);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		fuelTons = result;
+        	}
+        });
+        pane2.getChildren().add(fTBox);
 
+        //Launch Cost
+        VBox lCBox = new VBox();
+        Label lCLabel = new Label("Launch Cost");
+        TextField lCText = new TextField("20000000.00");
+        lCText.addEventFilter(KeyEvent.ANY, keyHandler);
+        lCBox.getChildren().addAll(lCLabel,lCText);
+        lCText.textProperty().addListener((observable,oldValue,newValue) -> {
+        	double result = textTest(lCText, newValue, oldValue, 20000000.00);
+        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
+        	if(result != -1) {
+        		launchCost = result;
+        	}
+        });
+        pane2.getChildren().add(lCBox);
+        
         VBox aSBox = new VBox();
         aSBox.getChildren().add(addSatellite());
         aSBox.alignmentProperty().set(Pos.CENTER);
         pane2.getChildren().add(aSBox);
-
-
     }
 
 
