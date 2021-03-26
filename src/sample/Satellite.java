@@ -42,6 +42,6 @@ public class Satellite {
     
     public double getLaunchCost() 
     {
-    	return this.costPerSqFootage;
+    	return this.launchCost;
     }
 }
