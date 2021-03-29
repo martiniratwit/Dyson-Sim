@@ -1,0 +1,39 @@
+Devin's Work on base estimates:
+Solar panels cost roughly $10 per square foot.
+A satellite is roughly 500 square feet.
+This means that the solar panel alone would cost around $5000.
+However, this is just the panel, and it requires protection from space, as well as a laser to fire back energy.
+
+Some estimate that each satellite costs about $1 million to produce, making the $5000 spent on solar panels alone seem irrelevant.
+To fuel a satellite, it is expected for each satellite to carry roughly 3 tons of fuel.
+Rocket fuel weighs in at about 770 gallons per ton, and cost roughly $1.65 per gallon as of 2015.
+This means that fuel costs about $3811.5
+
+The launch cost for each satellite is roughly $20 million.
+
+Repair information is hard to find, so that is something I need to continue to research.
+
+Satellites last for about 10 years, meaning that each panel in the array must be replaced that ofren.
+
+To calculate our data, a few things must be kept in mind: cost of the full satellite, cost to launch, cost to repair, fuel cost, and satellite lifetime.
+With these values, any information we want to display can be calculated.
+
+ie:
+Total cost of satellite: sat cost + launch cost + fuel cost + (repair cost * lifetime)
+
+Seamus N's work on energy:
+Energy the sun emits 3.86*10^26watts of energy every second so that equates to 3.33504e+31watts every day.
+
+A solar panel get get about 400watts absorbed in a 24 hour period.
+
+Energy from the sun takes 8 minutes20 seconds to get here
+
+One billionth of the suns energy actually gets to earth, if the panels absorb more of that then they can hopefully be more efficient in the transfer. 
+
+References
+Various Resarch For Calculations -  
+https://www.newscientist.com/article/mg12316724-700/#:~:text=Today's%20satellites%20are%20frugal%20with,shuttle%20manages%20on%2012.5%20kilowatts.   
+&  
+https://science.howstuffworks.com/satellite10.htm#:~:text=Launching%20a%20single%20satellite%20into,be%20almost%20%2414%2C000%20per%20pound. 
+& 
+https://engineering.purdue.edu/AAECourses/aae450/2008/spring/report_archive/reportfinaluploads/pdfs/Report_Section_12.pdf
