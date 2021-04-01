@@ -47,6 +47,12 @@ public class Model
     	return (values[0] * values[1]) + (values[2] * values[3]) + values[4] + values[5];
     }
     
+    //Overloaded method for cases where values already found
+    public double getTotalCost(double[] values)
+    {
+    	return (values[0] * values[1]) + (values[2] * values[3]) + values[4] + values[5];
+    }
+    
     //Used to easily transfer data in single request
     public double[] getSatelliteValues(Box box)
     {

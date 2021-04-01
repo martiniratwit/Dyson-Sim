@@ -37,15 +37,16 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class View extends Application implements EventHandler<ActionEvent>{
-
-    private Controller control = new Controller();
-    static double costPerSqFootage = 10;
-    static double sqFootage = 500;
-    static double fuelTons = 3;
-    static double fuelCost = 1270.5;
-    static double productionCost = 1000000;
-    static double launchCost = 20000000;
-    static int satelliteNumber = 1;
+    
+	Controller controller;
+	
+    double costPerSqFootage = 10;
+    double sqFootage = 500;
+    double fuelTons = 3;
+    double fuelCost = 1270.5;
+    double productionCost = 1000000;
+    double launchCost = 20000000;
+    int satelliteNumber = 1;
     
     ArrayList<Box> visualSats = new ArrayList<>();
     ArrayList<Satellite> satellites = new ArrayList<>();
@@ -58,25 +59,27 @@ public class View extends Application implements EventHandler<ActionEvent>{
 
     private double timeSpeed = 1;
 
-    private final Button addSatellite = addSatellite();
-
     Group animationGroup = new Group(milkyWayIV(), new Group(sun, mercury));
 
     HBox pane = new HBox();
     VBox pane2 = new VBox();
-
+    HBox currentWindow = new HBox();
+    VBox labels = new VBox();
+    VBox values = new VBox();
+    
+    public View()
+    {
+    	this.controller = new Controller(this);
+    }
+    
     @Override
     public void handle(ActionEvent t) {
-        Box satellite = satellite();
-        visualSats.add(satellite);
-        satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost));
+        Box satellite = satellite(); //Creates the visual satellite box
+        visualSats.add(satellite); //Adds the box to the visual satellite list
+        satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite)); //Adds satellite object to satellite list
         
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
-        Label totalCost = new Label("Satellite" + satelliteNumber + " Cost: " + control.getTotalCost(satellites.get(satelliteNumber-1)));
-        pane2.getChildren().add(totalCost);
-
-
 
         AnimationTimer Rotation = new AnimationTimer() {
             @Override
@@ -146,18 +149,6 @@ public class View extends Application implements EventHandler<ActionEvent>{
         return milkyWayImageView;
     }
 
-    private Button addSatellite() {
-        Button button = new Button();
-        button.setLayoutX(-150);
-        button.setLayoutX(200);
-        button.setText("Add Satellite");
-        button.setOnAction(this);
-
-
-        return button;
-
-    }
-
     int row = 50;
     int tilt = 10;
     private Box satellite() {
@@ -165,7 +156,10 @@ public class View extends Application implements EventHandler<ActionEvent>{
         //satellite.getTransforms().add(new Translate(0,tilt,0));
 
         satellite.setRotationAxis(Rotate.Y_AXIS);
-
+        satellite.setOnMouseClicked(event ->
+        {
+        	controller.satelliteWindow(satellite);
+        });
         return satellite;
     }
 
@@ -334,9 +328,29 @@ public class View extends Application implements EventHandler<ActionEvent>{
         pane2.getChildren().add(lCBox);
         
         VBox aSBox = new VBox();
-        aSBox.getChildren().add(addSatellite());
+        
+        Button satelliteButton = new Button("Add Satellite");
+        satelliteButton.setLayoutX(-150);
+        satelliteButton.setLayoutX(200);
+        satelliteButton.setOnAction(this);
+        
+        
+        aSBox.getChildren().add(satelliteButton);
         aSBox.alignmentProperty().set(Pos.CENTER);
         pane2.getChildren().add(aSBox);
+        
+        //Creates labels for individual satellites
+        Label cPSF = new Label("Cost Per Sq Foot: ");
+        Label sF = new Label("Sq Feet: ");
+        Label fP = new Label("Fuel Price: ");
+        Label fT = new Label("Amount of Fuel (Tons): ");
+        Label pC = new Label("Production Cost: ");
+        Label lC = new Label("Launch Cost: ");
+        Label total = new Label("Total Cost: ");
+        labels.getChildren().addAll(cPSF,sF,fP,fT,pC,lC, total);
+        currentWindow.getChildren().addAll(labels, values);
+        pane2.getChildren().add(currentWindow);
+        
     }
 
 
@@ -363,7 +377,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
         subScene.setCamera(camera);
         camera.translateZProperty().set(-1000);
 
-        primaryStage.setTitle("Dyson Sim");
+        primaryStage.setTitle("Dyson Swarm Simulation");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -371,7 +385,22 @@ public class View extends Application implements EventHandler<ActionEvent>{
         subScene.widthProperty().bind(animationPane.widthProperty());
 
         Roation();
-
+    }
+    
+    //Empties the current satellite and adds the new values
+    public void setSatelliteWindow(double[] values, double total)
+    {
+    	this.values.getChildren().clear();
+    	this.values.getChildren().addAll(new Label(String.valueOf(values[0])), new Label(String.valueOf(values[1])),
+    									 new Label(String.valueOf(values[2])), new Label(String.valueOf(values[3])),
+    									 new Label(String.valueOf(values[4])), new Label(String.valueOf(values[5])));
+    }
+    
+    
+    
+    public void reset()
+    {
+    //Implement in final week	
     }
 
     public static void main(String[] args) {
