@@ -75,7 +75,8 @@ public class View extends Application implements EventHandler<ActionEvent>{
     public void handle(ActionEvent t) {
         Box satellite = satellite(); //Creates the visual satellite box
         visualSats.add(satellite); //Adds the box to the visual satellite list
-        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list
+        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list        
+        visualSats.add(satellite); //Adds the box to the visual satellite list
         
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
@@ -152,7 +153,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
     int tilt = 10;
     private Box satellite() {
         Box satellite = new Box(100,100,1);
-        //satellite.getTransforms().add(new Translate(0,tilt,0));
+        PhongMaterial satelliteMaterial = new PhongMaterial();
+        Image satelliteTexture = new Image(getClass().getResourceAsStream("/resources/Satellite Texture.jpg"));
+        satelliteMaterial.setDiffuseMap(satelliteTexture); //Initialize Texture to Material
+        satelliteMaterial.setSelfIlluminationMap(satelliteTexture); //Initialize Illumination to Material
+        satellite.setMaterial(satelliteMaterial); //Add material to Box
 
         satellite.setRotationAxis(Rotate.Y_AXIS);
         satellite.setOnMouseClicked(event ->
