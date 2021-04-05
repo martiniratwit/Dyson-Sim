@@ -75,6 +75,12 @@ public class View extends Application implements EventHandler<ActionEvent>{
     @Override
     public void handle(ActionEvent t) {
         Box satellite = satellite(); //Creates the visual satellite box
+        PhongMaterial satelliteMaterial = new PhongMaterial();
+        Image satelliteTexture = new Image(getClass().getResourceAsStream("/resources/Satellite Texture.jpg"));
+        satelliteMaterial.setDiffuseMap(satelliteTexture); //Initialize Texture to Material
+        satelliteMaterial.setSelfIlluminationMap(satelliteTexture); //Initialize Illumination to Material
+        satellite.setMaterial(satelliteMaterial); //Add material to Sun
+        
         visualSats.add(satellite); //Adds the box to the visual satellite list
         satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite)); //Adds satellite object to satellite list
         
