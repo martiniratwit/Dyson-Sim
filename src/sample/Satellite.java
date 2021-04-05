@@ -1,11 +1,13 @@
 package sample;
 
+import javafx.scene.shape.Box;
 
 public class Satellite {
 
     private double costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost;
+    private Box box;
     
-    public Satellite(double costPerSqFootage, double sqFootage, double fuelPrice, double fuelTons, double productionCost, double launchCost)
+    public Satellite(double costPerSqFootage, double sqFootage, double fuelPrice, double fuelTons, double productionCost, double launchCost, Box box)
     {
         this.costPerSqFootage = costPerSqFootage;
         this.sqFootage = sqFootage;
@@ -13,6 +15,7 @@ public class Satellite {
         this.fuelTons = fuelTons;
         this.productionCost = productionCost;
         this.launchCost = launchCost;
+        this.box = box;
     }
     
     public double getCostPerSqFootage() 
@@ -42,6 +45,11 @@ public class Satellite {
     
     public double getLaunchCost() 
     {
-    	return this.costPerSqFootage;
+    	return this.launchCost;
+    }
+    
+    public Box getBox()
+    {
+    	return this.box;
     }
 }
