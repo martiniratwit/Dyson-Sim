@@ -1,12 +1,4 @@
 package sample;
-/*
-        A = Solar Panel Cost (10$per sq ft)
-        B = Square Footage ~500
-        C = Production cost (constant 1mil per)
-        D = Fuel Cost(1.65$ per gallon 3ton 770g/t)
-        E = Launch Cost (Constant 20mil)
-*/
-
 import java.util.ArrayList;
 import javafx.scene.shape.Box;
 
@@ -16,12 +8,15 @@ public class Model
 
 	private ArrayList<Satellite> satellites;
 	
-	private final Satellite DEFAULT = new Satellite(10, 500, 1270.5, 3, 1000000, 20000000, null);;
+	private final Satellite DEFAULT = new Satellite(10, 500, 1270.5, 3, 1000000, 20000000, null);
+	
+	private int numSatellites;
 	
     //Only deals with creating the array to store new satellites
 	public Model() 
     {
     	this.satellites = new ArrayList<>();
+    	numSatellites = 0;
     }
 
     //Adds new satellite to satellites arraylist
@@ -29,7 +24,8 @@ public class Model
     public void addSatellite(double costPerSqFootage, double sqFootage, double fuelPrice, 
     		double fuelTons, double productionCost, double launchCost, Box box)
     {
-    	satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost, box));
+    	this.satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost, box));
+    	numSatellites++;
     }
 
     //Returns the total cost of given satellite based on clicked box object
@@ -60,17 +56,17 @@ public class Model
     	if(box == null)
     	{
     		return new double[] {DEFAULT.getCostPerSqFootage(), DEFAULT.getSqFootage(),
-    							 DEFAULT.getFuelPrice(), DEFAULT.getFuelTons(), 
+    							 DEFAULT.getFuelCost(), DEFAULT.getFuelTons(), 
     							 DEFAULT.getProductionCost(), DEFAULT.getLaunchCost()};
     	}
     	
     	//Check through every sat for corresponding box object
-    	for(Satellite satellite : satellites)
+    	for(Satellite satellite : this.satellites)
     	{
     		if(satellite.getBox().equals(box))
     		{
     			return new double[] {satellite.getCostPerSqFootage(), satellite.getSqFootage(),
-    								 satellite.getFuelPrice(), satellite.getFuelTons(),
+    								 satellite.getFuelCost(), satellite.getFuelTons(),
     								 satellite.getProductionCost(), satellite.getLaunchCost()};
     		}
     	}
@@ -78,8 +74,14 @@ public class Model
     	return null;
     }
     
+    public int getNumSatellites()
+    {
+    	return this.numSatellites;
+    }
+    
     public void reset()
     {
-    	satellites.clear();
+    	this.satellites.clear();
+    	this.numSatellites = 0;
     }
 }

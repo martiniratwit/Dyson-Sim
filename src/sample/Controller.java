@@ -1,12 +1,4 @@
 package sample;
-/*
-        A = Solar Panel Cost (10$per sq ft)
-        B = Square Footage ~500
-        C = Production cost (constant 1mil per)
-        D = Fuel Cost(1.65$ per gallon 3ton 770g/t)
-        E = Launch Cost (Constant 20mil)
-*/
-
 import javafx.scene.shape.Box;
 
 public class Controller
@@ -30,6 +22,7 @@ public class Controller
     		double fuelTons, double productionCost, double launchCost, Box box)
     {
     	this.model.addSatellite(costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost, box);
+    	getNumSatellites();
     }
     
     public void satelliteWindow(Box box) 
@@ -40,9 +33,15 @@ public class Controller
     	//Implement pause function on click when added
     }
     
+    public void getNumSatellites()
+    {
+    	this.view.setNumSatellites(this.model.getNumSatellites());
+    }
+    
     public void reset()
     {
     	this.view.reset();
     	this.model.reset();
+    	getNumSatellites();
     }
 }

@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -34,23 +35,23 @@ import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class View extends Application implements EventHandler<ActionEvent>{
     
-	Controller controller;
+	private Controller controller;
 	
-    double costPerSqFootage = 10;
-    double sqFootage = 500;
-    double fuelTons = 3;
-    double fuelCost = 1270.5;
-    double productionCost = 1000000;
-    double launchCost = 20000000;
-    int satelliteNumber = 1;
+    private double costPerSqFootage = 10;
+    private double sqFootage = 500;
+    private double fuelTons = 3;
+    private double fuelCost = 1270.5;
+    private double productionCost = 1000000;
+    private double launchCost = 20000000;
     
-    ArrayList<Box> visualSats = new ArrayList<>();
+    private ArrayList<Box> visualSats = new ArrayList<>();
 
-    Camera camera = new PerspectiveCamera(true);
+    private Camera camera = new PerspectiveCamera(true);
 
     private final Sphere sun = sun();
     private final Sphere mercury = mercury();
@@ -58,13 +59,16 @@ public class View extends Application implements EventHandler<ActionEvent>{
 
     private double timeSpeed = 1;
 
-    Group animationGroup = new Group(milkyWayIV(), new Group(sun, mercury));
+    private Group animationGroup = new Group(milkyWayIV(), new Group(sun, mercury));
 
-    HBox pane = new HBox();
-    VBox pane2 = new VBox();
-    HBox currentWindow = new HBox();
-    VBox labels = new VBox();
-    VBox values = new VBox();
+    private HBox pane = new HBox();
+    private VBox pane2 = new VBox();
+    private HBox currentWindow = new HBox();
+    private VBox labels = new VBox();
+    private VBox values = new VBox();
+    
+    private int row = 50;
+    private int tilt = 10;
     
     public View()
     {
@@ -75,13 +79,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
     public void handle(ActionEvent t) {
         Box satellite = satellite(); //Creates the visual satellite box
         visualSats.add(satellite); //Adds the box to the visual satellite list
-        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list        
-        visualSats.add(satellite); //Adds the box to the visual satellite list
-        
+        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list                
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
 
-        AnimationTimer Rotation = new AnimationTimer() {
+        AnimationTimer rotation = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 satellite.rotateProperty().set(satellite.getRotate() - 1);
@@ -89,11 +91,10 @@ public class View extends Application implements EventHandler<ActionEvent>{
 
             }
         };
-        Rotation.start();
+        rotation.start();
 
         row+=10;
         tilt+=10;
-        satelliteNumber+=1;
     }
     
     private Sphere sun() {
@@ -149,8 +150,6 @@ public class View extends Application implements EventHandler<ActionEvent>{
         return milkyWayImageView;
     }
 
-    int row = 50;
-    int tilt = 10;
     private Box satellite() {
         Box satellite = new Box(100,100,1);
         PhongMaterial satelliteMaterial = new PhongMaterial();
@@ -167,7 +166,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
         return satellite;
     }
 
-    private void Roation() {
+    private void mercuryRotation() {
 
         AnimationTimer Rotation = new AnimationTimer() {
             @Override
@@ -343,6 +342,10 @@ public class View extends Application implements EventHandler<ActionEvent>{
         aSBox.alignmentProperty().set(Pos.CENTER);
         pane2.getChildren().add(aSBox);
         
+        Label number = new Label("Number of Satellites: 0");
+        pane2.getChildren().add(number);
+        
+        
         //Creates labels for individual satellites
         Label cPSF = new Label("Cost Per Sq Foot: ");
         Label sF = new Label("Sq Feet: ");
@@ -355,6 +358,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
         currentWindow.getChildren().addAll(labels, values);
         pane2.getChildren().add(currentWindow);
         
+        Button resetButton = new Button("Reset");
+        resetButton.setOnAction(e -> {
+        	controller.reset();
+        });
+        pane2.getChildren().add(resetButton);
     }
 
 
@@ -388,7 +396,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
         subScene.heightProperty().bind(animationPane.heightProperty());
         subScene.widthProperty().bind(animationPane.widthProperty());
 
-        Roation();
+        mercuryRotation();
     }
     
     //Empties the current satellite and adds the new values
@@ -401,11 +409,18 @@ public class View extends Application implements EventHandler<ActionEvent>{
     									 new Label(String.valueOf(total)));
     }
     
-    
+    public void setNumSatellites(int num)
+    {
+    	((Label)this.pane2.getChildren().get(7)).setText("Number of Satellites: " + num);
+    }
     
     public void reset()
     {
-    //Implement in final week	
+    	while(visualSats.size() != 0)
+    	{
+    		animationGroup.getChildren().remove(visualSats.get(0));
+    		visualSats.remove(0);   		
+    	}
     }
 
     public static void main(String[] args) {
