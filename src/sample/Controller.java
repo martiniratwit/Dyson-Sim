@@ -22,7 +22,7 @@ public class Controller
     		double fuelTons, double productionCost, double launchCost, Box box)
     {
     	this.model.addSatellite(costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost, box);
-    	getNumSatellites();
+    	this.getNumSatellites();
     }
     
     public void satelliteWindow(Box box) 
@@ -40,8 +40,8 @@ public class Controller
     
     public void reset()
     {
-    	this.view.reset();
+    	this.view.reset(this.getDefaults());
     	this.model.reset();
-    	getNumSatellites();
+    	this.getNumSatellites();
     }
 }

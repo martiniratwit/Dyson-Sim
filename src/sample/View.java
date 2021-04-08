@@ -414,13 +414,14 @@ public class View extends Application implements EventHandler<ActionEvent>{
     	((Label)this.pane2.getChildren().get(7)).setText("Number of Satellites: " + num);
     }
     
-    public void reset()
+    public void reset(double[] values)
     {
     	while(visualSats.size() != 0)
     	{
     		animationGroup.getChildren().remove(visualSats.get(0));
     		visualSats.remove(0);   		
     	}
+    	this.values.getChildren().clear();
     }
 
     public static void main(String[] args) {
