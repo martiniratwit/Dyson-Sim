@@ -27,27 +27,37 @@ public class Model
     	this.satellites.add(new Satellite(costPerSqFootage, sqFootage, fuelPrice, fuelTons, productionCost, launchCost, box));
     	numSatellites++;
     }
-
+    
+    //Gets a given clicked satellite object
+    public Satellite getSatellite(Box box)
+    {
+    	for(int count = 0; count < satellites.size(); count++)
+    	{
+    		if(satellites.get(count).getBox().equals(box))
+    		{
+    			return satellites.get(count);
+    		}
+    	}
+    	return null;
+    }
+    
     //Returns the total cost of given satellite based on clicked box object
     public double getTotalCost(Box box) 
     {   
-    	//Gets values from satellite object
-    	double[] values = getSatelliteValues(box);
-    	
-    	//Error checking, provides values with default sat values
-    	if(values == null)
+    	Satellite sat = getSatellite(box);
+    	if(sat == null)
     	{
-    		values = getSatelliteValues(null);
     		System.out.println("Error getting sat values, using default values");
+    		return DEFAULT.getTotalCost();
     	}
-    	return (values[0] * values[1]) + (values[2] * values[3]) + values[4] + values[5];
+    	return sat.getTotalCost();
     }
     
-    //Overloaded method for cases where values already found
+    //Overloaded, for where values already found using box
     public double getTotalCost(double[] values)
     {
-    	return (values[0] * values[1]) + (values[2] * values[3]) + values[4] + values[5];
-    }
+		return (values[0] * values[1]) + (values[2] * values[3]) + values[4] + values[5];
+	}
     
     //Used to easily transfer data in single request
     public double[] getSatelliteValues(Box box)
@@ -77,6 +87,16 @@ public class Model
     public int getNumSatellites()
     {
     	return this.numSatellites;
+    }
+    
+    public double getArrayCost()
+    {
+    	double total = 0;
+    	for(Satellite satellite : this.satellites)
+    	{
+    		total += satellite.getTotalCost();
+    	}
+    	return total;
     }
     
     public void reset()

@@ -25,6 +25,11 @@ public class Controller
     	this.getNumSatellites();
     }
     
+    public void arrayCost()
+    {
+    	this.view.setArrayCost(this.model.getArrayCost());
+    }
+    
     public void satelliteWindow(Box box) 
     {
     	double[] values = this.model.getSatelliteValues(box);

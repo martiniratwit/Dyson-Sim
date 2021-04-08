@@ -66,6 +66,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
     private HBox currentWindow = new HBox();
     private VBox labels = new VBox();
     private VBox values = new VBox();
+    private HBox arrayCost = new HBox();
     
     private int row = 50;
     private int tilt = 10;
@@ -79,7 +80,8 @@ public class View extends Application implements EventHandler<ActionEvent>{
     public void handle(ActionEvent t) {
         Box satellite = satellite(); //Creates the visual satellite box
         visualSats.add(satellite); //Adds the box to the visual satellite list
-        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list                
+        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list   
+        this.controller.arrayCost();
         animationGroup.getChildren().add(satellite);
         satellite.getTransforms().add(new Translate(12.5,0,125));
 
@@ -151,7 +153,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
     }
 
     private Box satellite() {
-        Box satellite = new Box(100,100,1);
+        Box satellite = new Box(10,10,1);
         PhongMaterial satelliteMaterial = new PhongMaterial();
         Image satelliteTexture = new Image(getClass().getResourceAsStream("/resources/Satellite Texture.jpg"));
         satelliteMaterial.setDiffuseMap(satelliteTexture); //Initialize Texture to Material
@@ -358,6 +360,10 @@ public class View extends Application implements EventHandler<ActionEvent>{
         currentWindow.getChildren().addAll(labels, values);
         pane2.getChildren().add(currentWindow);
         
+        
+        arrayCost.getChildren().add(new Label("Total Array Cost: 0"));
+        pane2.getChildren().add(arrayCost);
+        
         Button resetButton = new Button("Reset");
         resetButton.setOnAction(e -> {
         	controller.reset();
@@ -403,10 +409,12 @@ public class View extends Application implements EventHandler<ActionEvent>{
     public void setSatelliteWindow(double[] values, double total)
     {
     	this.values.getChildren().clear();
-    	this.values.getChildren().addAll(new Label(String.valueOf(values[0])), new Label(String.valueOf(values[1])),
-    									 new Label(String.valueOf(values[2])), new Label(String.valueOf(values[3])),
-    									 new Label(String.valueOf(values[4])), new Label(String.valueOf(values[5])),
-    									 new Label(String.valueOf(total)));
+    	this.values.getChildren().addAll(new Label(String.format("%.2f", values[0])), new Label(String.format("%.2f", values[1])),
+				 new Label(String.format("%.2f", values[2])), new Label(String.format("%.2f", values[3])),
+				 new Label(String.format("%.2f", values[4])), new Label(String.format("%.2f", values[5])), 
+				 new Label(String.format("%.2f", total)));
+    	
+
     }
     
     public void setNumSatellites(int num)
@@ -422,6 +430,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
     		visualSats.remove(0);   		
     	}
     	this.values.getChildren().clear();
+    }
+    
+    public void setArrayCost(double total)
+    {
+    	((Label)this.arrayCost.getChildren().get(0)).setText("Total Array Cost: " + total);
     }
 
     public static void main(String[] args) {

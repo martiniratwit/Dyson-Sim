@@ -52,4 +52,9 @@ public class Satellite {
     {
     	return this.box;
     }
+    
+    public double getTotalCost()
+    {
+    	return this.costPerSqFootage * this.sqFootage + this.fuelCost * this.fuelTons + this.productionCost + this.launchCost;
+    }
 }
