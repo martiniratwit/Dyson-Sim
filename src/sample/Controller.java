@@ -35,7 +35,6 @@ public class Controller
     	double[] values = this.model.getSatelliteValues(box);
     	double total = this.model.getTotalCost(values);
     	this.view.setSatelliteWindow(values, total);
-    	//Implement pause function on click when added
     }
     
     public void getNumSatellites()

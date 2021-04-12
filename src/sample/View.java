@@ -132,7 +132,7 @@ public class View extends Application{
     }
 
     private Box satellite() {
-        Box satellite = new Box(10,10,1);
+        Box satellite = new Box(30,30,1);
         PhongMaterial satelliteMaterial = new PhongMaterial();
         Image satelliteTexture = new Image(getClass().getResourceAsStream("/resources/Satellite Texture.jpg"));
         satelliteMaterial.setDiffuseMap(satelliteTexture); //Initialize Texture to Material
@@ -474,6 +474,8 @@ public class View extends Application{
                 new Label(String.format("%.2f", values[4])), new Label(String.format("%.2f", values[5])),
                 new Label(String.format("%.2f", total)));
 
+        this.previousTimeSpeed = this.timeSpeed;
+        this.timeSpeed = 0;
 
     }
 
