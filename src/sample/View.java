@@ -473,8 +473,10 @@ public class View extends Application{
                 new Label(String.format("%.2f", values[2])), new Label(String.format("%.2f", values[3])),
                 new Label(String.format("%.2f", values[4])), new Label(String.format("%.2f", values[5])),
                 new Label(String.format("%.2f", total)));
-
-        this.previousTimeSpeed = this.timeSpeed;
+        if(this.timeSpeed != 0)
+        {
+        	this.previousTimeSpeed = this.timeSpeed;
+        }
         this.timeSpeed = 0;
 
     }
