@@ -38,17 +38,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class View extends Application implements EventHandler<ActionEvent>{
-    
-	private Controller controller;
-	
+public class View extends Application{
+
+    private Controller controller;
+
     private double costPerSqFootage = 10;
     private double sqFootage = 500;
     private double fuelTons = 3;
     private double fuelCost = 1270.5;
     private double productionCost = 1000000;
     private double launchCost = 20000000;
-    
+
     private ArrayList<Box> visualSats = new ArrayList<>();
 
     private Camera camera = new PerspectiveCamera(true);
@@ -58,6 +58,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
     private final Sphere milkyWay = milkyWay();
 
     private double timeSpeed = 1;
+    private double previousTimeSpeed = 1;
 
     private Group animationGroup = new Group(milkyWayIV(), new Group(sun, mercury));
 
@@ -67,38 +68,16 @@ public class View extends Application implements EventHandler<ActionEvent>{
     private VBox labels = new VBox();
     private VBox values = new VBox();
     private HBox arrayCost = new HBox();
-    
+
     private int row = 50;
     private int tilt = 10;
-    
+
     public View()
     {
-    	this.controller = new Controller(this);
+        this.controller = new Controller(this);
     }
-    
-    @Override
-    public void handle(ActionEvent t) {
-        Box satellite = satellite(); //Creates the visual satellite box
-        visualSats.add(satellite); //Adds the box to the visual satellite list
-        this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list   
-        this.controller.arrayCost();
-        animationGroup.getChildren().add(satellite);
-        satellite.getTransforms().add(new Translate(12.5,0,125));
-
-        AnimationTimer rotation = new AnimationTimer() {
-            @Override
-            public void handle(long l) {
-                satellite.rotateProperty().set(satellite.getRotate() - 1);
 
 
-            }
-        };
-        rotation.start();
-
-        row+=10;
-        tilt+=10;
-    }
-    
     private Sphere sun() {
         Sphere sun = new Sphere(100);
 
@@ -163,7 +142,7 @@ public class View extends Application implements EventHandler<ActionEvent>{
         satellite.setRotationAxis(Rotate.Y_AXIS);
         satellite.setOnMouseClicked(event ->
         {
-        	controller.satelliteWindow(satellite);
+            controller.satelliteWindow(satellite);
         });
         return satellite;
     }
@@ -192,67 +171,67 @@ public class View extends Application implements EventHandler<ActionEvent>{
         return animationPane;
 
     }
-    
+
     //This function checks to see if the current value set in the text box is valid, and updates the store variable accordingly
     private double textTest(TextField text, String value, String old, double base) {
-    	try {
-    		int first = value.indexOf(".");
-    		if(first != -1) {
-    			//If there are two '.', then the old text and value are used
-    			if(value.indexOf(".", first + 1) != -1) {
-    				setText(text, old);
-    				return -1.0000;
-    			}
-    		}
-    		//Happens only with empty text box, using base value as a placeholder in variable storage
-    		if(value.equals("") || value.equals(".")) {
-    			setText(text, value);
-    			return base;
-    		} 
-    	}
-    	//When something goes wrong, the base value is the safety value that overrides the new value
-    	catch(Exception ex) {
-    		setText(text, Double.toString(base));
-    		return base;
-    	}
-		//Happens when nothing is wrong, and value is valid
-		setText(text, value);
-		return Double.parseDouble(value);
+        try {
+            int first = value.indexOf(".");
+            if(first != -1) {
+                //If there are two '.', then the old text and value are used
+                if(value.indexOf(".", first + 1) != -1) {
+                    setText(text, old);
+                    return -1.0000;
+                }
+            }
+            //Happens only with empty text box, using base value as a placeholder in variable storage
+            if(value.equals("") || value.equals(".")) {
+                setText(text, value);
+                return base;
+            }
+        }
+        //When something goes wrong, the base value is the safety value that overrides the new value
+        catch(Exception ex) {
+            setText(text, Double.toString(base));
+            return base;
+        }
+        //Happens when nothing is wrong, and value is valid
+        setText(text, value);
+        return Double.parseDouble(value);
     }
-    	
+
     private void setText(TextField text, String value) {
-    	text.textProperty().setValue(value);
+        text.textProperty().setValue(value);
     }
-    
-    
+
+
     private void setInputPane() {
-    	
-    	//This filters out any non-numeric values from being handled in the listener
+
+        //This filters out any non-numeric values from being handled in the listener
         EventHandler<KeyEvent> keyHandler = new EventHandler<KeyEvent>() {
             public void handle(KeyEvent event) {
-            	if(!event.getCharacter().matches("[0123456789.]")) {		
-            		if(!event.getCode().isArrowKey()) {
-            			if(event.getCode() != KeyCode.BACK_SPACE && event.getCode() != KeyCode.DELETE) {
-            				event.consume();
-            			}
-            		}
-            	}
+                if(!event.getCharacter().matches("[0123456789.]")) {
+                    if(!event.getCode().isArrowKey()) {
+                        if(event.getCode() != KeyCode.BACK_SPACE && event.getCode() != KeyCode.DELETE) {
+                            event.consume();
+                        }
+                    }
+                }
             }
-            
+
         };
-    	
-    	//Panel Cost Text Field
+
+        //Panel Cost Text Field
         VBox sPCBox = new VBox();
         Label sPCLabel = new Label("Panel Cost (Per Square Footage)");
         TextField sPCText = new TextField("10.00");
         sPCText.addEventFilter(KeyEvent.ANY, keyHandler);
         sPCBox.getChildren().addAll(sPCLabel,sPCText);
         sPCText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	double result = textTest(sPCText, newValue, oldValue, 10);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		costPerSqFootage = result;
-        	}
+            double result = textTest(sPCText, newValue, oldValue, 10);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                costPerSqFootage = result;
+            }
         });
 
         pane2.getChildren().add(sPCBox);
@@ -264,11 +243,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
         sFText.addEventFilter(KeyEvent.ANY, keyHandler);
         sFBox.getChildren().addAll(sFLabel,sFText);
         sFText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	double result = textTest(sFText, newValue, oldValue, 500.00);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		sqFootage = result;
-        	}
+            double result = textTest(sFText, newValue, oldValue, 500.00);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                sqFootage = result;
+            }
         });
         pane2.getChildren().add(sFBox);
 
@@ -279,14 +258,14 @@ public class View extends Application implements EventHandler<ActionEvent>{
         pCText.addEventFilter(KeyEvent.ANY, keyHandler);
         pCBox.getChildren().addAll(pCLabel,pCText);
         pCText.textProperty().addListener((observable, oldValue, newValue) -> {
-        	double result = textTest(pCText, newValue, oldValue, 1000000.00);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		productionCost = result;
-        	}
+            double result = textTest(pCText, newValue, oldValue, 1000000.00);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                productionCost = result;
+            }
         });
         pane2.getChildren().add(pCBox);
-             
+
         //Fuel Cost Text Field
         VBox fCBox = new VBox();
         Label fCLabel = new Label("Fuel Cost (Per Ton) ");
@@ -294,14 +273,14 @@ public class View extends Application implements EventHandler<ActionEvent>{
         fCText.addEventFilter(KeyEvent.ANY, keyHandler);
         fCBox.getChildren().addAll(fCLabel,fCText);
         fCText.textProperty().addListener((observable,oldValue,newValue) -> {
-        	double result = textTest(fCText, newValue, oldValue, 1270.50);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		fuelCost = result;
-        	}
+            double result = textTest(fCText, newValue, oldValue, 1270.50);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                fuelCost = result;
+            }
         });
         pane2.getChildren().add(fCBox);
-        
+
         //Fuel Tons
         VBox fTBox = new VBox();
         Label fTLabel = new Label("Amount of Fuel (Tons)");
@@ -309,11 +288,11 @@ public class View extends Application implements EventHandler<ActionEvent>{
         fTText.addEventFilter(KeyEvent.ANY, keyHandler);
         fTBox.getChildren().addAll(fTLabel,fTText);
         fTText.textProperty().addListener((observable,oldValue,newValue) -> {
-        	double result = textTest(fTText, newValue, oldValue, 3.00);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		fuelTons = result;
-        	}
+            double result = textTest(fTText, newValue, oldValue, 3.00);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                fuelTons = result;
+            }
         });
         pane2.getChildren().add(fTBox);
 
@@ -324,30 +303,51 @@ public class View extends Application implements EventHandler<ActionEvent>{
         lCText.addEventFilter(KeyEvent.ANY, keyHandler);
         lCBox.getChildren().addAll(lCLabel,lCText);
         lCText.textProperty().addListener((observable,oldValue,newValue) -> {
-        	double result = textTest(lCText, newValue, oldValue, 20000000.00);
-        	//Only occurs when text doesn't contain two '.', meaning the value doesn't change
-        	if(result != -1) {
-        		launchCost = result;
-        	}
+            double result = textTest(lCText, newValue, oldValue, 20000000.00);
+            //Only occurs when text doesn't contain two '.', meaning the value doesn't change
+            if(result != -1) {
+                launchCost = result;
+            }
         });
         pane2.getChildren().add(lCBox);
-        
+
         VBox aSBox = new VBox();
-        
+
         Button satelliteButton = new Button("Add Satellite");
         satelliteButton.setLayoutX(-150);
         satelliteButton.setLayoutX(200);
-        satelliteButton.setOnAction(this);
-        
-        
+        satelliteButton.setOnAction(e -> {
+            Box satellite = satellite(); //Creates the visual satellite box
+            visualSats.add(satellite); //Adds the box to the visual satellite list
+            this.controller.addSatellite(costPerSqFootage, sqFootage, fuelCost, fuelTons, productionCost, launchCost, satellite); //Adds satellite object to satellite list
+            this.controller.arrayCost();
+            animationGroup.getChildren().add(satellite);
+            satellite.getTransforms().add(new Translate(12.5,0,125));
+
+            AnimationTimer rotation = new AnimationTimer() {
+                @Override
+                public void handle(long l) {
+                    satellite.rotateProperty().set(satellite.getRotate() - 1 * timeSpeed);
+
+
+                }
+            };
+            rotation.start();
+
+            row+=10;
+            tilt+=10;
+
+        });
+
+
         aSBox.getChildren().add(satelliteButton);
         aSBox.alignmentProperty().set(Pos.CENTER);
         pane2.getChildren().add(aSBox);
-        
+
         Label number = new Label("Number of Satellites: 0");
         pane2.getChildren().add(number);
-        
-        
+
+
         //Creates labels for individual satellites
         Label cPSF = new Label("Cost Per Sq Foot: ");
         Label sF = new Label("Sq Feet: ");
@@ -359,14 +359,74 @@ public class View extends Application implements EventHandler<ActionEvent>{
         labels.getChildren().addAll(cPSF,sF,fP,fT,pC,lC, total);
         currentWindow.getChildren().addAll(labels, values);
         pane2.getChildren().add(currentWindow);
-        
-        
+
+
         arrayCost.getChildren().add(new Label("Total Array Cost: 0"));
         pane2.getChildren().add(arrayCost);
-        
+
+            //Implements time-control
+        HBox timeBox = new HBox();
+        Label timeLabel = new Label(timeSpeed + "x");
+
+        Button pauseButton = new Button("II");
+        pauseButton.setOnAction(e -> {
+            if (timeSpeed == 0) {
+                timeSpeed = previousTimeSpeed;
+                pauseButton.setText("II");
+                timeLabel.setText(timeSpeed + "x");
+            } else {
+                timeSpeed = 0;
+                pauseButton.setText("▶");
+                timeLabel.setText(timeSpeed + "x");
+            }
+        });
+
+        Button slowButton = new Button("<<");
+        slowButton.setOnAction(e -> {
+
+            if (timeSpeed == 0 && previousTimeSpeed != .25){
+                timeSpeed = previousTimeSpeed;
+                previousTimeSpeed = timeSpeed;
+                pauseButton.setText("II");
+                timeLabel.setText(timeSpeed + "x");
+
+            }
+
+            if (timeSpeed == .25 || timeSpeed == 0) {
+
+            } else {
+                timeSpeed -= .25;
+                previousTimeSpeed = timeSpeed;
+                timeLabel.setText(timeSpeed + "x");
+            }
+        });
+
+        Button speedButton = new Button(">>");
+        speedButton.setOnAction(e -> {
+
+            if (timeSpeed == 0 && previousTimeSpeed != 1.75){
+                timeSpeed = previousTimeSpeed;
+                previousTimeSpeed = timeSpeed;
+                pauseButton.setText("II");
+                timeLabel.setText(timeSpeed + "x");
+
+            }
+
+            if (timeSpeed == 1.75 || timeSpeed == 0) {
+
+            } else {
+                timeSpeed += .25;
+                previousTimeSpeed = timeSpeed;
+                timeLabel.setText(timeSpeed + "x");
+            }
+        });
+
+        timeBox.getChildren().addAll(slowButton, pauseButton, speedButton, timeLabel);
+        pane2.getChildren().add(timeBox);
+
         Button resetButton = new Button("Reset");
         resetButton.setOnAction(e -> {
-        	controller.reset();
+            controller.reset();
         });
         pane2.getChildren().add(resetButton);
     }
@@ -404,37 +464,37 @@ public class View extends Application implements EventHandler<ActionEvent>{
 
         mercuryRotation();
     }
-    
+
     //Empties the current satellite and adds the new values
     public void setSatelliteWindow(double[] values, double total)
     {
-    	this.values.getChildren().clear();
-    	this.values.getChildren().addAll(new Label(String.format("%.2f", values[0])), new Label(String.format("%.2f", values[1])),
-				 new Label(String.format("%.2f", values[2])), new Label(String.format("%.2f", values[3])),
-				 new Label(String.format("%.2f", values[4])), new Label(String.format("%.2f", values[5])), 
-				 new Label(String.format("%.2f", total)));
-    	
+        this.values.getChildren().clear();
+        this.values.getChildren().addAll(new Label(String.format("%.2f", values[0])), new Label(String.format("%.2f", values[1])),
+                new Label(String.format("%.2f", values[2])), new Label(String.format("%.2f", values[3])),
+                new Label(String.format("%.2f", values[4])), new Label(String.format("%.2f", values[5])),
+                new Label(String.format("%.2f", total)));
+
 
     }
-    
+
     public void setNumSatellites(int num)
     {
-    	((Label)this.pane2.getChildren().get(7)).setText("Number of Satellites: " + num);
+        ((Label)this.pane2.getChildren().get(7)).setText("Number of Satellites: " + num);
     }
-    
+
     public void reset(double[] values)
     {
-    	while(visualSats.size() != 0)
-    	{
-    		animationGroup.getChildren().remove(visualSats.get(0));
-    		visualSats.remove(0);   		
-    	}
-    	this.values.getChildren().clear();
+        while(visualSats.size() != 0)
+        {
+            animationGroup.getChildren().remove(visualSats.get(0));
+            visualSats.remove(0);
+        }
+        this.values.getChildren().clear();
     }
-    
+
     public void setArrayCost(double total)
     {
-    	((Label)this.arrayCost.getChildren().get(0)).setText("Total Array Cost: " + total);
+        ((Label)this.arrayCost.getChildren().get(0)).setText("Total Array Cost: " + total);
     }
 
     public static void main(String[] args) {
