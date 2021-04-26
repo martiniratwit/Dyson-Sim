@@ -10,11 +10,11 @@ This simulation is meant to roughly mimick the form that a Dyson Swarm surroundi
 
 1. Display the simulation
   * Display the graphics of the required objects (sun, mercury, space)
-  * Show any satellites add to the simulation
+  * Show any satellites added to the simulation
   * Display the buttons meant to alter the simulation's state
 
 2. Manage user inputs
-  * Alter the simulation's speed when the appropriate speed button is clicked
+  * Alter the simulation's speed when a speed button is clicked
   * Add a satellite to the simulation when the satellite button is clicked
   * Reset the simulation when the reset simulation button is clicked
   * Change the satellite variables when text box value is changed
