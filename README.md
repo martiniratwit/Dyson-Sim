@@ -47,7 +47,7 @@ Open the 'View.java' file and run it.
 
 ## Demo video
 
-demo here
+https://www.youtube.com/watch?v=J0muFPGH8Kg
 
 ## Contributors
 * Robert Martini (martinir@wit.edu), Project Lead
