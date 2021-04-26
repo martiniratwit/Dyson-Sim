@@ -71,6 +71,8 @@ public class View extends Application{
 
     private int row = 50;
     private int tilt = 10;
+    
+    Button pauseButton = new Button("Pause");
 
     public View()
     {
@@ -368,15 +370,15 @@ public class View extends Application{
         HBox timeBox = new HBox();
         Label timeLabel = new Label(timeSpeed + "x");
 
-        Button pauseButton = new Button("II");
-        pauseButton.setOnAction(e -> {
+        
+        this.pauseButton.setOnAction(e -> {
             if (timeSpeed == 0) {
                 timeSpeed = previousTimeSpeed;
-                pauseButton.setText("II");
+                pauseButton.setText("Pause");
                 timeLabel.setText(timeSpeed + "x");
             } else {
                 timeSpeed = 0;
-                pauseButton.setText("▶");
+                pauseButton.setText("Play");
                 timeLabel.setText(timeSpeed + "x");
             }
         });
@@ -387,7 +389,7 @@ public class View extends Application{
             if (timeSpeed == 0 && previousTimeSpeed != .25){
                 timeSpeed = previousTimeSpeed;
                 previousTimeSpeed = timeSpeed;
-                pauseButton.setText("II");
+                pauseButton.setText("Pause");
                 timeLabel.setText(timeSpeed + "x");
 
             }
@@ -407,7 +409,7 @@ public class View extends Application{
             if (timeSpeed == 0 && previousTimeSpeed != 1.75){
                 timeSpeed = previousTimeSpeed;
                 previousTimeSpeed = timeSpeed;
-                pauseButton.setText("II");
+                pauseButton.setText("Pause");
                 timeLabel.setText(timeSpeed + "x");
 
             }
@@ -478,7 +480,7 @@ public class View extends Application{
         	this.previousTimeSpeed = this.timeSpeed;
         }
         this.timeSpeed = 0;
-
+        this.pauseButton.setText("Play");
     }
 
     public void setNumSatellites(int num)
