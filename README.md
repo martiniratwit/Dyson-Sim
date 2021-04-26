@@ -21,23 +21,28 @@ This simulation is meant to roughly mimick the form that a Dyson Swarm surroundi
   
 ## Getting Started
 ### Installation and Setup
-Install the Eclipse IDE
-//Change this
-Inside the Eclipse IDE, go to the marketplace under the help tab.
-Search for e(fx)clipse and install.
-//Change this
+Download and install the Eclipse IDE from https://www.eclipse.org/downloads/packages/.
+Download, extract, and place the 'javafx-sdk-16' into the C:/ directory.
 
 Import this repo into Eclipse using the .git link (https://github.com/martiniratwit/Dyson-Sim.git).
-In Eclipse, click the 'File' tab and click 'Import'.
-Click 'Git', followed by 'Projects from Git (with smart import)'.
-Click 'Clone URI', paste the .git link into the 'URI' line.
-Enter your git Username and Password and click next.
-Click 'Next' twice, and click 'Finish'.
-After the repo has been cloned, change the buildpath to include the newly installed JavaFX.
-//Change this
-Right click on the project, hover over 'Build Path', and click 'Add Libraries...'.
-Double click on 'JavaFX SDK'.
-//Change this
+- In Eclipse, click the 'File' tab and click 'Import'.
+- Click 'Git', followed by 'Projects from Git (with smart import)'.
+- Click 'Clone URI', paste the .git link into the 'URI' line.
+- Enter your git Username and Password and click next.
+- Click 'Next' twice, and click 'Finish'.
+After the repo has been cloned, change the buildpath to include the JavaFX JARs.
+- Click the 'Window' tab at the top and click 'Preferences'.
+- Click 'New' and type in 'JavaFX'.
+- Click on 'JavaFX' and click 'Add External JARs'.
+- Highlight all of the JAR files in 'C:\javafx-sdk-16\lib' and open them with the Eclipse file explorer tab.
+- Click 'Apply and Close'.
+- Right click the project, hover over 'Build Path' and click 'Add Libraries'.
+- Click 'User Library' and check 'JavaFX'. Click 'Finish'.
+- Right click the project, hover over 'Build Path' and click 'Configure Build Path'.
+- Click 'Java Build Path' on the left and click 'Order and Export' on the top. Check all boxes.
+- Click 'Run/Debug Settings' on the left, click 'View' and click 'Edit'.
+- Click 'Arguments' and paste '--module-path C:\javafx-sdk-16\lib --add-modules=javafx.controls' into the 'VM arguments' box. 
+- Click 'Apply', 'OK', and 'Apply and Close'
 
 ### Run
 Open Eclipse to the workspace where you cloned the repo.
