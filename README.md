@@ -21,8 +21,8 @@ This simulation is meant to roughly mimick the form that a Dyson Swarm surroundi
   
 ## Getting Started
 ### Installation and Setup
-Download and install the Eclipse IDE from https://www.eclipse.org/downloads/packages/.
-Download, extract, and place the 'javafx-sdk-16' into the C:/ directory.
+- Download and install the Eclipse IDE from https://www.eclipse.org/downloads/packages/.
+- Download, extract, and place the 'javafx-sdk-16' into the C:/ directory from 'https://gluonhq.com/products/javafx/'.
 
 Import this repo into Eclipse using the link 'https://github.com/martiniratwit/Dyson-Sim.git'.
 - In Eclipse, click the 'File' tab and click 'Import'.
